@@ -1,4 +1,5 @@
-from pynput.mouse import Listener, Button
+from pynput.mouse import Listener, Button, Controller
+
 
 class ClickListener:
     def __init__(self):
@@ -8,8 +9,9 @@ class ClickListener:
 
     @classmethod
     def on_click(cls, x, y, button, pressed):
+        mouse = Controller()
         if pressed and button == Button.middle:
-            cls.ClickPositions.append((x,y))
+            cls.ClickPositions.append(mouse.position)
             cls.CurrentClick += 1
             if cls.ClickTimes <= cls.CurrentClick:
                 return False
@@ -18,9 +20,10 @@ class ClickListener:
 
     @classmethod
     def getClicks(cls, nr):
-       cls.ClickPositions = []
-       cls.CurrentClick = 0
-       cls.ClickTimes = nr
-       with Listener(on_click = cls.on_click) as listener:
+        cls.ClickPositions = []
+        cls.CurrentClick = 0
+        cls.ClickTimes = nr
+        with Listener(on_click=cls.on_click) as listener:
             listener.join()
-       return cls.ClickPositions
+        return cls.ClickPositions
+
